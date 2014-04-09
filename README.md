@@ -5,7 +5,7 @@ Full Demo for dropzonejs
 
 This demo provides step by step workdown for implementing dropzonejs in ASP.NET MVC 5.
 
-STEPS FOR IMPLEMENTING DROPZONE.JS
+Description of Steps
 ==
 1.	Create ASP.NET MVC Project with the option empty or internet.
 2.	Add dropzonejs using nugget package manager.
@@ -22,22 +22,23 @@ STEPS FOR IMPLEMENTING DROPZONE.JS
       	 </requestFiltering>
         </security>
 
-DESCRIPTION OF STEPS
+Description of Steps
 ===
+This section will be made available very soon
 
-AUTHORS
+Authors
 ==
 Development and documentation done by Bibek Maharjan
 
-CONTRIBUTORS
+Contributors
 ==
 Bugs, fixes and other feedbacks will be taken positively.
 
-REFERENCES
+References
 ==
 Dropzonejs: www.dropzonejs.com
 
-LICENSE
+License
 ==
 Copyright (c) 2014 Prolific IT Solutions
 
