@@ -10,10 +10,10 @@ Description of Steps
 1.	Create ASP.NET MVC Project with the option empty or internet.
 2.	Add dropzonejs using nugget package manager.
 3.	Copy the following files to your project in their respective directories.
-    a.	HomeController.cs in Controllers folder
-    b.	ImageStoreModel.cs in Models folder
-    c.	Index.cshtml in Home folder of Views folder
-    d.	Upload.cshtml in Home folder of Views folder
+    a.	HomeController.cs in Controllers folder.
+    b.	ImageStoreModel.cs in Models folder.
+    c.	Index.cshtml in Home folder of Views folder.
+    d.	Upload.cshtml in Home folder of Views folder.
 4.	Add the following lines in root Web.config of <system.web> and <system.webServer> respectively.
     a.	<httpRuntime targetFramework="4.5" maxRequestLength="1048576" />
     b.	<security>
