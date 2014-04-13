@@ -83,10 +83,6 @@ For supporting fallback, add the following code inside the form tag. In old brow
 &lt;input name="file" type="file" multiple /&gt;
 &lt;/div>
 
-Add the button for submitting the form.
-
-&lt;button id="submit-all">Submit All Files&lt;/button&gt;
-
 This minimal setting should get dropzonejs to upload the file. Oops! Error. Upload action yet to be created.
 
 ### Upload files (Upload action (HomeController.aspx))
@@ -129,6 +125,8 @@ Create Upload action in the HomeController
         return null;
     }
 </code>
+
+Now, the file can be uploaded to the server folder. This time the file gets automatically uploaded as soon as the file browser dialog closes.
 
 ### Display files
 ### Delete files
