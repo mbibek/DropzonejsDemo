@@ -1,172 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Web;
 using System.Web.Mvc;
-using DropzonejsDemo.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace DropzonejsDemo.Controllers
 {
+    /// <summary>
+    /// Different functions needed for perfomring file actions such as upload and delete
+    /// <author>Bibek Maharjan</author>
+    /// <Date>12/04/2014</Date>
+    /// </summary>
     public class HomeController : Controller
     {
-        //
-        // GET: /Home/
-        private readonly string _path = System.Web.HttpContext.Current.Server.MapPath("/UploadedImages/");
-
+        /// <summary>
+        /// Gets the dropzone for uploading the file
+        /// View: Views/Home/Index.cshtml
+        /// </summary>
+        /// <returns>Index View</returns>
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// Uploads the file
+        /// </summary>
+        /// <returns>null</returns>
         [HttpPost]
         public ActionResult Upload()
         {
-
-            List<ImageStoreModel> images = new List<ImageStoreModel>();
-
-            for(int index = 0; index < Request.Files.Count; index++)
+            //Loop through the HttpFileCollection to get the keys (names) of the files
+            foreach (string fileName in Request.Files)
             {
-                HttpPostedFileBase file = Request.Files[index];
+                //Use the key (filename) to get the HttpPostedFileBase object
+                HttpPostedFileBase file = Request.Files[fileName];
 
-                //Save file content goes here
-                if(file != null && file.ContentLength > 0)
+                //Check for the null reference i.e file is not null and content length is greater than zero
+                if (file != null && file.ContentLength > 0)
                 {
-                    string fullPath = CreatePath(_path, file.FileName);
+                    //Give the directory name where the file will be uploaded
+                    string path = Server.MapPath("/UploadImages/");
 
-                    try
-                    {
-                        file.SaveAs(fullPath);
+                    //Check if the directory exists
+                    if(!Directory.Exists(path))
+                        //Create the diretory
+                        Directory.CreateDirectory(path);
 
-                        images.Add(new ImageStoreModel()
-                        {
-                            Name = file.FileName,
-                            Size = file.ContentLength.ToString(),
-                            FullPath = fullPath,
-                            IsSuccess = "True",
-                            Message = file.FileName + " uploaded successfully."
-                        });
+                    //Get the name of the file being uploaded
+                    string fName = file.FileName;
 
-                    }
-                    catch(Exception)
-                    {
+                    //Create full path combining path and fileName
+                    string fullPath = Path.Combine(path + fName.ToString());
 
-                        images.Add(new ImageStoreModel()
-                        {
-                            Name = file.FileName,
-                            Size = file.ContentLength.ToString(),
-                            FullPath = fullPath,
-                            IsSuccess = "False",
-                            Message = file.FileName + " was not uploaded. Please try again and if the problem persists, please cantact system admin/ vendor."
-                        });
-                    }
+                    //Save the file
+                    file.SaveAs(fullPath);
                 }
-
+                
             }
-            if(Request.IsAjaxRequest())
-            {
-                return JsonResult(images);
-            }
-            else
-            {
-                return RedirectToAction("PostUpload");
-            }
-        }
-
-        [HttpPost]
-        public JsonResult DeleteFile(string data)
-        {
-            ImageStoreModel image = new ImageStoreModel();
-
-            if(Directory.Exists(_path))
-            {
-                string fullPath = Path.Combine(_path, data);
-
-                FileInfo fileInfo = new FileInfo(fullPath);
-
-                if(fileInfo.Exists)
-                {
-                    fileInfo.Delete();
-                    image.Name = data;
-                    image.Size = fileInfo.Length.ToString();
-                    image.FullPath = fullPath;
-                    image.IsSuccess = "True";
-                    image.Message = data + " is deleted succesfully.";
-                }
-            }
-
-            return JsonResult(image);
-
-        }
-
-        public JsonResult DownloadFiles()
-        {
-            List<ImageStoreModel> images = new List<ImageStoreModel>();
-
-            if(Directory.Exists(_path))
-            {
-                var files = Directory.GetFiles(_path);
-
-                foreach(var file in files)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string fullPath = Path.Combine(_path, fileName);
-
-                    FileInfo fileInfo = new FileInfo(fullPath);
-
-                    string fileSize = fileInfo.Length.ToString();
-
-                    if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".bmp")
-                        images.Add(new ImageStoreModel() { Name = fileName, Size = fileSize, IsSuccess = "True" });
-                }
-
-            }
-            else
-            {
-                images.Add(new ImageStoreModel() { Name = "", Size = "", IsSuccess = "False" });
-            }
-
-
-
-            return JsonResult(images);
-        }
-
-        
-        private string CreatePath(string filePath, string fileName)
-        {
-
-            CreateDirectory(filePath);
-
-            var fullPath = Path.Combine(filePath, fileName);
-            return fullPath;
-        }
-
-       
-        private static void CreateDirectory(string pathString)
-        {
-            bool isExists = System.IO.Directory.Exists(pathString);
-
-            if(!isExists)
-                System.IO.Directory.CreateDirectory(pathString);
-        }
-
-        private JsonResult JsonResult(List<ImageStoreModel> images)
-        {
-            var settings = new JsonSerializerSettings();
-
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
-            return Json(JsonConvert.SerializeObject(images, Formatting.None, settings), JsonRequestBehavior.AllowGet);
-        }
-
-        private JsonResult JsonResult(ImageStoreModel image)
-        {
-            var settings = new JsonSerializerSettings();
-
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
-            return Json(JsonConvert.SerializeObject(image, Formatting.None, settings), JsonRequestBehavior.AllowGet);
+            //Return null for remaining in the same page
+            return null;
         }
     }
 }
